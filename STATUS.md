@@ -1,6 +1,10 @@
 # STATUS — THE NORTHMOB demo
 
-**Where we are:** fifth build — aesthetic aligned to the owner's references (monochrome photo,
+**Where we are:** sixth build — community + CRM + uploads. New: Community page
+(join the family, exclusive merch, newsletter), admin CRM with contact timelines,
+image uploads (members/products/gallery), sized merch (S–XXL), Members tab, gallery
+manager. Verified 99/99. Deployed base: https://demo0ps.github.io/the-north-mob/
+(this build is committed locally — see Next steps to publish). Previous state: fifth build — aesthetic aligned to the owner's references (monochrome photo,
 red accents), typographic event posters, single-tee store, Play on the partner wall,
 @thenorthmob_ live. Verified 76/76. Live in the preview pane; run locally with
 `python3 -m http.server 8000 --bind 0.0.0.0` from this folder.
@@ -15,7 +19,8 @@ red accents), typographic event posters, single-tee store, Play on the partner w
 | `merch.html` | Agenda 04 — **single-item store: the H4B Tee** + cart + demo checkout. |
 | `partners.html` | Agenda 05 — **Play (Title partner, link TBC)** + 2 open slots + 3 tiers; Agenda 07 Invest (greyscale boardroom). |
 | `bookings.html` | Agenda 06 — Form B-01 booking request. |
-| `gallery.html` | Agenda 08 — 5 IG windows (**all live, incl. @thenorthmob_**) + 8-photo feed + lightbox. |
+| `community.html` | Agenda 09 — Join the Family: benefits, Form F-01, newsletter opt-in (POPIA: off by default), member ID on success. |
+| `gallery.html` | Agenda 08 — 5 IG windows (**all live, incl. @thenorthmob_**) + 8-photo feed + lightbox (admin-managed). |
 | `admin.html` | Orders board, enquiries, catalogue editor, gig manager, links manager, content editor, data export/import/reset. |
 
 Cart/checkout/toast injected on every page; cart follows the visitor across pages.

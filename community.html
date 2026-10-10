@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Community — THE NORTHMOB</title>
+  <meta name="description" content="Join the family — exclusive merch, the newsletter, early access. THE NORTHMOB community.">
+  <meta name="theme-color" content="#0B0B0E">
+  <link rel="icon" type="image/jpeg" href="assets/img/logo.jpg">
+  <link rel="apple-touch-icon" href="assets/img/logo.jpg">
+  <link rel="stylesheet" href="assets/css/site.css?v=11">
+</head>
+<body data-page="community">
+
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track" id="tickerTrack"></div>
+  </div>
+
+  <header class="site-nav">
+    <div class="container inner">
+      <a class="brand" href="index.html" aria-label="THE NORTHMOB — home"><img class="logo-mark" src="assets/img/logo.jpg" alt="THE NORTHMOB"></a>
+      <nav class="nav-links" aria-label="Main">
+        <a href="index.html">Home</a>
+        <a href="the-mob.html">The Mob</a>
+        <a href="gigs.html">Gigs</a>
+        <a href="merch.html">Merch</a>
+        <a href="partners.html">Partners</a>
+        <a href="bookings.html">Bookings</a>
+        <a href="community.html" class="active">Community</a>
+        <a href="gallery.html" class="hot">Gallery</a>
+      </nav>
+      <button class="cart-btn" id="cartBtn" aria-label="Open cart">
+        Cart <span class="cart-count" id="cartCount" style="display:none">0</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- AGENDA 09: THE FAMILY -->
+    <section class="section page-gap" id="community">
+      <div class="container">
+        <div class="sec-head">
+          <p class="sec-slash">/// AGENDA 09 — THE FAMILY</p>
+          <h2 class="sec-title">Join the Family</h2>
+          <p class="sec-note">Family first is how the Mob runs. Join the community and get what the streets don't.</p>
+        </div>
+
+        <div class="story-grid">
+          <div class="story-card">
+            <h3>Exclusive merch</h3>
+            <p>Family-only drops you can't buy as an outsider. First dibs, limited runs, signed pieces.</p>
+          </div>
+          <div class="story-card">
+            <h3>The newsletter</h3>
+            <p>Dates before they drop publicly, listening-party invites, and word from the board. No spam — the Mob doesn't chase.</p>
+          </div>
+          <div class="story-card">
+            <h3>Early access</h3>
+            <p>Tickets and events reach the family first. When something opens to the streets, you're already inside.</p>
+          </div>
+        </div>
+
+        <p class="form-kicker" style="margin:1.8rem 0 1.1rem">Form F-01 — Family Registration</p>
+        <form class="form-card" id="communityForm" novalidate>
+          <div class="form-grid two">
+            <div class="field">
+              <label for="cmName">Name *</label>
+              <input id="cmName" type="text" autocomplete="name" required>
+              <span class="err">Name is required.</span>
+            </div>
+            <div class="field">
+              <label for="cmEmail">Email *</label>
+              <input id="cmEmail" type="email" autocomplete="email" required>
+              <span class="err">A valid email is required.</span>
+            </div>
+            <div class="field">
+              <label for="cmPhone">Phone (optional)</label>
+              <input id="cmPhone" type="tel" autocomplete="tel">
+            </div>
+          </div>
+          <fieldset class="field">
+            <label>What do you want to hear about?</label>
+            <div class="check-grid">
+              <label class="check-line"><input type="checkbox" name="cmInterest" value="listening parties"> Listening parties</label>
+              <label class="check-line"><input type="checkbox" name="cmInterest" value="merch drops"> Merch drops</label>
+              <label class="check-line"><input type="checkbox" name="cmInterest" value="new music"> New music</label>
+              <label class="check-line"><input type="checkbox" name="cmInterest" value="everything"> Everything</label>
+            </div>
+          </fieldset>
+          <div class="field">
+            <label class="check-line" for="cmNewsletter">
+              <input type="checkbox" id="cmNewsletter"> Send me the newsletter
+            </label>
+            <span class="hint" style="display:block;margin-top:0.3rem">Off by default (POPIA). Demo: nothing is sent anywhere — signups land in the admin panel only.</span>
+          </div>
+          <button type="submit" class="btn btn-red">Join the family</button>
+        </form>
+        <div class="success-panel mt hidden" id="communityDone">
+          <p>You're family now. Member ID:</p>
+          <p class="ref" id="communityRef"></p>
+          <p class="hint">Exclusive merch is unlocked on the Merch page. Demo: membership lives in this browser only.</p>
+        </div>
+        <p class="sec-note mt"><span id="familyCount"></span></p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="foot-grid">
+        <div>
+          <div class="letterhead">
+            <img class="logo-mark" src="assets/img/logo.jpg" alt="THE NORTHMOB">
+            <div>
+              <h4>THE NORTHMOB</h4>
+              <p class="hint">EST. GA-RANKUWA · PRETORIA NORTH</p>
+            </div>
+          </div>
+          <p style="color:var(--muted);max-width:26rem;margin-top:0.7rem">Trapcardi pioneers. Family first — here 4 business.</p>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <p><a id="footEmail" href="#"></a></p>
+          <p><a id="footPhone" href="#"></a></p>
+        </div>
+        <div>
+          <h4>Site</h4>
+          <p><a href="the-mob.html">The Mob</a> · <a href="gigs.html">Gigs</a> · <a href="merch.html">Merch</a></p>
+          <p><a href="partners.html">Partners</a> · <a href="bookings.html">Bookings</a> · <a href="community.html">Community</a> · <a href="gallery.html">Gallery</a></p>
+          <p><a href="admin.html">Admin (demo)</a></p>
+        </div>
+      </div>
+      <p class="fine">
+        Demo site for THE NORTHMOB (prospect, not signed). Merch prices, event details, sponsors and contact details are placeholders.
+        Statistics are as reported in music media coverage, not independently verified.
+        Hero, merch and poster imagery is AI-generated, for illustration; the logo and photos of the Mob are supplied by the owner.
+        Checkout and forms are simulations — no payments are taken and no data leaves this browser.
+      </p>
+    </div>
+  </footer>
+
+  <script src="assets/js/seed.js?v=6"></script>
+  <script src="assets/js/store.js?v=2"></script>
+  <script src="assets/js/site.js?v=11"></script>
+</body>
+</html>

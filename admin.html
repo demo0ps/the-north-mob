@@ -6,7 +6,7 @@
   <title>Admin — THE NORTHMOB (demo)</title>
   <meta name="robots" content="noindex">
   <link rel="icon" type="image/jpeg" href="assets/img/logo.jpg">
-  <link rel="stylesheet" href="assets/css/site.css?v=10">
+  <link rel="stylesheet" href="assets/css/site.css?v=11">
 </head>
 <body>
 
@@ -18,11 +18,15 @@
         <a class="btn btn-ghost btn-sm to-site" href="index.html">← View storefront</a>
       </div>
       <p class="hint" style="padding-bottom:0.6rem">Everything is stored in this browser only (localStorage). Export from the Data tab to move it — no backend, no logins, nothing leaves this device.</p>
+      <div class="storage-banner" id="storageBanner" role="alert"></div>
       <nav class="tabs" aria-label="Admin sections">
         <button class="tab active" data-panel="panel-orders">Orders <span class="count" id="ordCount">0</span></button>
         <button class="tab" data-panel="panel-enquiries">Enquiries <span class="count" id="enqCount">0</span></button>
+        <button class="tab" data-panel="panel-crm">CRM <span class="count" id="crmCount">0</span></button>
+        <button class="tab" data-panel="panel-community">Family <span class="count" id="famCount">0</span></button>
         <button class="tab" data-panel="panel-catalogue">Catalogue</button>
         <button class="tab" data-panel="panel-gigs">Gigs</button>
+        <button class="tab" data-panel="panel-members">Members</button>
         <button class="tab" data-panel="panel-links">Links</button>
         <button class="tab" data-panel="panel-content">Content</button>
         <button class="tab" data-panel="panel-data">Data</button>
@@ -67,6 +71,40 @@
         <div id="enquiryList"></div>
       </section>
 
+      <!-- CRM -->
+      <section class="admin-panel" id="panel-crm">
+        <div class="sec-head">
+          <p class="sec-slash">/// RELATIONSHIPS</p>
+          <h2 class="sec-title">CRM</h2>
+          <p class="sec-note"><span id="crmMembers">0 members</span> — every order, enquiry and signup becomes a contact with a timeline. Click a row to open.</p>
+        </div>
+        <div class="panel-card" style="overflow-x:auto">
+          <div class="fieldline" style="margin-bottom:0.8rem">
+            <input class="admin-input" id="crmSearch" placeholder="Search name, email, phone, tag…">
+          </div>
+          <table class="tbl">
+            <thead><tr><th>Contact</th><th>Email / phone</th><th>Status</th><th>Events</th><th>Last activity</th><th>Tags</th></tr></thead>
+            <tbody id="crmBody"></tbody>
+          </table>
+        </div>
+        <div id="crmDetail"></div>
+      </section>
+
+      <!-- FAMILY / COMMUNITY -->
+      <section class="admin-panel" id="panel-community">
+        <div class="sec-head">
+          <p class="sec-slash">/// THE FAMILY</p>
+          <h2 class="sec-title">Community</h2>
+          <p class="sec-note"><span id="famSubs">0 newsletter subscribers</span> — signups from Form F-01 on the community page.</p>
+        </div>
+        <div class="panel-card" style="overflow-x:auto">
+          <table class="tbl">
+            <thead><tr><th>Member</th><th>Email / phone</th><th>Interests</th><th>Newsletter</th><th>Joined</th></tr></thead>
+            <tbody id="communityBody"></tbody>
+          </table>
+        </div>
+      </section>
+
       <!-- CATALOGUE -->
       <section class="admin-panel" id="panel-catalogue">
         <div class="sec-head">
@@ -86,6 +124,16 @@
         </div>
         <div style="margin-bottom:1.2rem"><button class="btn btn-hl btn-sm" id="addGig">+ Add gig</button></div>
         <div id="gigList"></div>
+      </section>
+
+      <!-- MEMBERS -->
+      <section class="admin-panel" id="panel-members">
+        <div class="sec-head">
+          <p class="sec-slash">/// THE BOARD</p>
+          <h2 class="sec-title">Members</h2>
+          <p class="sec-note">The four directors — names, titles, handles and photos. Uploads are compressed and stored in this browser.</p>
+        </div>
+        <div id="memberList"></div>
       </section>
 
       <!-- LINKS -->
@@ -125,6 +173,14 @@
           <textarea class="admin-input" id="ctTicker" rows="6"></textarea>
         </div>
         <div class="panel-card">
+          <h3>Gallery</h3>
+          <p class="hint" style="margin-bottom:0.9rem">Photos shown in the gallery feed. Reorder, remove, or upload new ones (compressed, stored in this browser).</p>
+          <div class="pm-grid" id="galleryMgr"></div>
+          <label class="btn btn-hl btn-sm" style="display:inline-block;margin-top:0.9rem">
+            + Add photos <input type="file" id="galleryUpload" accept="image/*" multiple hidden>
+          </label>
+        </div>
+        <div class="panel-card">
           <h3>Sponsor wall</h3>
           <div id="sponsorRows"></div>
           <button class="btn btn-hl btn-sm" id="addSponsor">+ Add partner slot</button>
@@ -160,8 +216,8 @@
     </div>
   </main>
 
-  <script src="assets/js/seed.js?v=5"></script>
-  <script src="assets/js/store.js?v=1"></script>
-  <script src="assets/js/admin.js?v=2"></script>
+  <script src="assets/js/seed.js?v=6"></script>
+  <script src="assets/js/store.js?v=2"></script>
+  <script src="assets/js/admin.js?v=4"></script>
 </body>
 </html>

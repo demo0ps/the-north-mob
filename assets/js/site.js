@@ -147,7 +147,7 @@
       card.appendChild(top);
       var photo = el("div", "biz-photo");
       if (m.photo) {
-        var img = el("img"); img.src = "assets/img/" + m.photo;
+        var img = el("img"); img.src = imgSrc(m.photo);
         img.alt = esc(m.name) + " (client-supplied photo)";
         photo.appendChild(img);
       } else {
@@ -208,26 +208,69 @@
   }
 
   // ---------- merch ----------
+  function imgSrc(src) {
+    src = String(src);
+    if (src.indexOf("data:") === 0) return src;      // uploaded data URI
+    if (src.indexOf("/") > -1) return src;           // already a path
+    return "assets/img/" + src;                      // bare file name
+  }
   function renderMerch() {
     var grid = $("#merchGrid");
     if (!grid) return;
     grid.innerHTML = "";
+    var member = S.isMember();
     S.state.catalogue.filter(function (p) { return p.active; }).forEach(function (p) {
+      if (p.exclusive && !member) {
+        // locked card — teaser for the community page
+        var locked = el("article", "product product-locked");
+        var lw = el("div", "product-img");
+        var limg = el("img"); limg.src = imgSrc(p.img); limg.alt = "Members-only item — locked"; limg.loading = "lazy";
+        lw.appendChild(limg);
+        lw.appendChild(el("div", "locked-veil", '<span class="lock">MEMBERS ONLY</span>'));
+        locked.appendChild(lw);
+        var lb = el("div", "product-body");
+        lb.appendChild(el("h3", "product-name", "Locked drop"));
+        lb.appendChild(el("p", "product-desc", "The family gets first access to exclusive merch."));
+        var la = el("a", "btn btn-hl btn-sm", "Join the family");
+        la.href = "community.html";
+        lb.appendChild(la);
+        locked.appendChild(lb);
+        grid.appendChild(locked);
+        return;
+      }
       var card = el("article", "product");
+      if (p.exclusive) card.className = "product product-exclusive";
       var imgWrap = el("div", "product-img");
-      var img = el("img"); img.src = p.img; img.alt = "Illustrative AI-generated mockup: " + esc(p.name); img.loading = "lazy";
+      var img = el("img"); img.src = imgSrc(p.img); img.alt = "Illustrative mockup: " + esc(p.name); img.loading = "lazy";
       imgWrap.appendChild(img);
       imgWrap.appendChild(el("span", "price-sticker", S.fmt(p.priceCents)));
+      if (p.exclusive) imgWrap.appendChild(el("span", "member-flag", "FAMILY"));
       if (!p.stock) imgWrap.appendChild(el("div", "soldout", "Sold out"));
       card.appendChild(imgWrap);
       var body = el("div", "product-body");
       body.appendChild(el("h3", "product-name", esc(p.name)));
       body.appendChild(el("p", "product-desc", esc(p.desc || "")));
       if (p.ai) body.appendChild(el("span", "product-ai", "Illustrative image (AI)"));
+      var chosenSize = null;
+      if (p.sizes && p.sizes.length) {
+        chosenSize = p.sizes.indexOf("M") > -1 ? "M" : p.sizes[0];
+        var pills = el("div", "size-pills");
+        p.sizes.forEach(function (sz) {
+          var id = "sz-" + p.id + "-" + sz;
+          var input = el("input"); input.type = "radio"; input.name = "sz-" + p.id; input.value = sz; input.id = id;
+          if (sz === chosenSize) input.checked = true;
+          var lab = el("label", "size-pill", esc(sz));
+          lab.setAttribute("for", id);
+          input.addEventListener("change", function () { chosenSize = sz; });
+          pills.appendChild(input); pills.appendChild(lab);
+        });
+        body.appendChild(pills);
+      }
       var btn = el("button", "btn btn-red btn-sm", p.stock ? "Add to cart" : "Sold out");
       if (!p.stock) { btn.disabled = true; btn.className = "btn btn-disabled btn-sm"; }
       else btn.addEventListener("click", function () {
-        if (S.addToCart(p.id)) { updateCartBadge(); toast("Added: " + p.name); renderCart(); }
+        if (S.addToCart(p.id, chosenSize)) { updateCartBadge(); toast("Added: " + p.name + (chosenSize ? " (" + chosenSize + ")" : "")); renderCart(); }
+        else toast("Join the family first — it's free");
       });
       body.appendChild(btn);
       card.appendChild(body);
@@ -258,20 +301,20 @@
     }
     lines.forEach(function (l) {
       var row = el("div", "cart-line");
-      var img = el("img"); img.src = l.img; img.alt = esc(l.name);
+      var img = el("img"); img.src = imgSrc(l.img); img.alt = esc(l.name);
       var mid = el("div");
-      mid.appendChild(el("div", "n", esc(l.name)));
+      mid.appendChild(el("div", "n", esc(l.name) + (l.size ? ' <span class="cart-size">[' + esc(l.size) + "]</span>" : "")));
       mid.appendChild(el("div", "p", S.fmt(l.priceCents) + " each"));
       var qty = el("div", "qty");
       var minus = el("button", null, "–"); minus.setAttribute("aria-label", "Decrease quantity");
       var count = el("span", null, String(l.qty));
       var plus = el("button", null, "+"); plus.setAttribute("aria-label", "Increase quantity");
-      minus.addEventListener("click", function () { S.setQty(l.id, l.qty - 1); renderCart(); updateCartBadge(); });
-      plus.addEventListener("click", function () { S.setQty(l.id, l.qty + 1); renderCart(); updateCartBadge(); });
+      minus.addEventListener("click", function () { S.setQty(l.key, l.qty - 1); renderCart(); updateCartBadge(); });
+      plus.addEventListener("click", function () { S.setQty(l.key, l.qty + 1); renderCart(); updateCartBadge(); });
       qty.appendChild(minus); qty.appendChild(count); qty.appendChild(plus);
       mid.appendChild(qty);
       var rm = el("button", "rm", "Remove");
-      rm.addEventListener("click", function () { S.removeFromCart(l.id); renderCart(); updateCartBadge(); });
+      rm.addEventListener("click", function () { S.removeFromCart(l.key); renderCart(); updateCartBadge(); });
       mid.appendChild(rm);
       var tot = el("div", "line-total", S.fmt(l.priceCents * l.qty));
       row.appendChild(img); row.appendChild(mid); row.appendChild(tot);
@@ -288,7 +331,7 @@
     var box = $("#coSummary");
     box.innerHTML = "";
     S.cartLines().forEach(function (l) {
-      box.appendChild(el("div", "row", "<span>" + esc(l.name) + " × " + l.qty + "</span><span>" + S.fmt(l.priceCents * l.qty) + "</span>"));
+      box.appendChild(el("div", "row", "<span>" + esc(l.name) + (l.size ? " (" + esc(l.size) + ")" : "") + " × " + l.qty + "</span><span>" + S.fmt(l.priceCents * l.qty) + "</span>"));
     });
     box.appendChild(el("div", "row total", "<span>Total</span><span>" + S.fmt(S.cartTotal()) + "</span>"));
   }
@@ -440,7 +483,7 @@
         var b = el("button");
         b.setAttribute("aria-label", "Open photo " + (i + 1));
         var img = el("img");
-        img.src = "assets/img/" + p; img.alt = "THE NORTHMOB — photo " + (i + 1) + " (client-supplied)";
+        img.src = imgSrc(p); img.alt = "THE NORTHMOB — photo " + (i + 1) + " (client-supplied)";
         img.loading = "lazy";
         b.appendChild(img);
         b.addEventListener("click", function () { openLightbox(i); });
@@ -453,12 +496,12 @@
   var lbIndex = 0;
   function openLightbox(i) {
     lbIndex = i;
-    $("#lightboxImg").src = "assets/img/" + S.state.photos[i];
+    $("#lightboxImg").src = imgSrc(S.state.photos[i]);
     $("#lightbox").classList.add("open");
   }
   function lbStep(d) {
     lbIndex = (lbIndex + d + S.state.photos.length) % S.state.photos.length;
-    $("#lightboxImg").src = "assets/img/" + S.state.photos[lbIndex];
+    $("#lightboxImg").src = imgSrc(S.state.photos[lbIndex]);
   }
   function wireLightbox() {
     if (!$("#lightbox")) return;
@@ -486,6 +529,59 @@
     if (p) { p.textContent = S.state.content.contactPhone; p.href = "tel:" + S.state.content.contactPhone.replace(/\s+/g, ""); }
   }
 
+  // ---------- membership chip (every page) ----------
+  function renderMemberChip() {
+    var nav = $(".site-nav .inner");
+    if (!nav) return;
+    var existing = $("#memberChip");
+    if (existing) existing.remove();
+    if (!S.isMember()) return;
+    var chip = el("span", "member-chip", "FAMILY");
+    chip.id = "memberChip";
+    chip.title = S.state.membership.name + " — family member";
+    var cartBtn = $("#cartBtn");
+    if (cartBtn) nav.insertBefore(chip, cartBtn); else nav.appendChild(chip);
+  }
+
+  // ---------- community (join the family) ----------
+  function wireCommunityForm() {
+    var form = $("#communityForm");
+    if (!form) return;
+    var count = $("#familyCount");
+    if (count) count.textContent = state_countLabel();
+    form.addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      var nameF = $("#cmName").closest(".field");
+      var mailF = $("#cmEmail").closest(".field");
+      nameF.classList.remove("invalid"); mailF.classList.remove("invalid");
+      var ok = true;
+      var name = $("#cmName").value.trim();
+      var email = $("#cmEmail").value.trim();
+      if (name.length < 2) { nameF.classList.add("invalid"); ok = false; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { mailF.classList.add("invalid"); ok = false; }
+      if (!ok) return;
+      var interests = [];
+      document.querySelectorAll("input[name='cmInterest']:checked").forEach(function (c) { interests.push(c.value); });
+      var m = S.joinCommunity({
+        name: name, email: email, phone: $("#cmPhone").value.trim(),
+        interests: interests, newsletter: $("#cmNewsletter").checked
+      });
+      if (!m) return;
+      form.reset();
+      $("#communityDone").classList.remove("hidden");
+      $("#communityRef").textContent = m.id;
+      $("#communityDone").scrollIntoView({ behavior: "smooth", block: "center" });
+      renderMemberChip();
+      var c2 = $("#familyCount");
+      if (c2) c2.textContent = state_countLabel();
+      renderMerch();
+    });
+  }
+  function state_countLabel() {
+    var n = S.state.community.length;
+    return n + (n === 1 ? " family member" : " family members") + " (demo)";
+  }
+
   // ---------- init ----------
   document.addEventListener("DOMContentLoaded", function () {
     // inject shared chrome first, then wire everything that exists on this page
@@ -495,7 +591,8 @@
     renderTicker(); renderHero(); renderNextEvent(); renderStats(); renderCrew();
     renderGigs(); renderMerch(); renderSponsors(); renderIG(); renderFooter();
     updateCartBadge(); renderCart();
-    wireBookingForm(); wireInvestForm(); wireLightbox();
+    renderMemberChip();
+    wireBookingForm(); wireInvestForm(); wireLightbox(); wireCommunityForm();
 
     var cartBtn = $("#cartBtn");
     if (cartBtn) cartBtn.addEventListener("click", openDrawer);

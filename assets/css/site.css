@@ -672,3 +672,59 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
 .gp-meta strong { color: #fff; }
 .gp-rule { height: 4px; margin: 1rem 1.2rem 0; background: linear-gradient(90deg, var(--red) 0 64px, var(--line) 64px 100%); }
 .gp-body { padding: 1rem 1.2rem 1.3rem; margin-top: auto; display: flex; flex-direction: column; gap: 0.6rem; }
+
+/* ---------- v7: sizes, exclusive, member chip, CRM, gallery manager ---------- */
+.size-pills { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.35rem 0 0.6rem; }
+.size-pills input { position: absolute; opacity: 0; pointer-events: none; }
+.size-pill {
+  border: 1px solid var(--line); border-radius: 8px; padding: 0.28rem 0.62rem;
+  font-size: 0.74rem; font-weight: 900; letter-spacing: 0.06em; color: var(--muted);
+  cursor: pointer; transition: color 0.12s, border-color 0.12s, background 0.12s;
+}
+.size-pill:hover { color: var(--paper); border-color: var(--paper); }
+.size-pills input:checked + .size-pill { background: var(--red); border-color: var(--red); color: #fff; }
+.size-pills input:focus-visible + .size-pill { outline: 3px solid var(--hl); outline-offset: 2px; }
+.cart-size { background: var(--panel-2); border: 1px solid var(--line); border-radius: 5px; font-size: 0.68rem; padding: 0 0.3rem; font-weight: 900; }
+.member-flag {
+  position: absolute; left: 12px; top: 12px; background: var(--red); color: #fff;
+  font-size: 0.6rem; font-weight: 900; letter-spacing: 0.14em; border-radius: 6px; padding: 0.22rem 0.5rem;
+}
+.product-locked .product-img img { filter: blur(9px) grayscale(0.4) brightness(0.75); }
+.locked-veil { position: absolute; inset: 0; display: grid; place-items: center; }
+.locked-veil .lock {
+  border: 3px double var(--red); color: var(--red); background: rgba(11,11,14,0.55);
+  font-family: var(--display); font-size: 1.05rem; letter-spacing: 0.18em; padding: 0.4rem 0.9rem;
+  transform: rotate(-5deg);
+}
+.member-chip {
+  background: var(--red); color: #fff; font-size: 0.62rem; font-weight: 900;
+  letter-spacing: 0.16em; border-radius: 999px; padding: 0.32rem 0.7rem; flex: none;
+  border: 2px solid #fff;
+}
+.check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+@media (max-width: 560px) { .check-grid { grid-template-columns: 1fr; } }
+fieldset.field { border: none; }
+.st-crm-new { background: var(--panel-2); color: var(--paper); border: 1px solid var(--line); }
+.st-crm-contacted { background: var(--red); color: #fff; }
+.st-crm-member { background: var(--hl); color: #000; }
+.st-crm-partner { background: var(--paper); color: #000; }
+.crm-event { padding: 0.55rem 0; border-bottom: 1px dashed var(--line); }
+.crm-event:last-child { border-bottom: none; }
+.pm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 0.7rem; }
+.pm-cell { position: relative; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--panel-2); }
+.pm-thumb { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; }
+.pm-ctl { position: absolute; bottom: 4px; right: 4px; display: flex; gap: 4px; }
+.pm-btn {
+  width: 24px; height: 24px; border-radius: 6px; border: 1px solid var(--line);
+  background: rgba(11,11,14,0.85); color: var(--paper); font-size: 0.7rem; line-height: 1;
+}
+.pm-btn:hover { border-color: var(--red); color: var(--red); }
+.pm-del:hover { border-color: var(--red); background: var(--red); color: #fff; }
+.member-preview { width: 74px; height: 74px; object-fit: cover; border-radius: 10px; border: 1px solid var(--line); display: block; margin: 0.3rem 0; }
+.storage-banner {
+  display: none; margin: 0.5rem 0 0; padding: 0.6rem 0.8rem; border-radius: 8px;
+  background: rgba(222, 3, 4, 0.14); border: 1px solid var(--red); color: var(--red);
+  font-size: 0.78rem; font-weight: 700;
+}
+.storage-banner.show { display: block; }
+.upload-wrap { display: inline-block; }
