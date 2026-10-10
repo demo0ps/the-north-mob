@@ -1,6 +1,8 @@
 # STATUS — THE NORTHMOB demo
 
-**Where we are:** sixth build — community + CRM + uploads. New: Community page
+**Where we are:** seventh build — members area: member-number login (H4B-0001…),
+exclusive buying shop, private invite parties with RSVP + free entry, member perks.
+Verified 98/98. Previous state: sixth build — community + CRM + uploads. New: Community page
 (join the family, exclusive merch, newsletter), admin CRM with contact timelines,
 image uploads (members/products/gallery), sized merch (S–XXL), Members tab, gallery
 manager. Verified 99/99. Deployed: https://demo0ps.github.io/the-north-mob/ —
@@ -21,6 +23,7 @@ red accents), typographic event posters, single-tee store, Play on the partner w
 | `partners.html` | Agenda 05 — **Play (Title partner, link TBC)** + 2 open slots + 3 tiers; Agenda 07 Invest (greyscale boardroom). |
 | `bookings.html` | Agenda 06 — Form B-01 booking request. |
 | `community.html` | Agenda 09 — Join the Family: benefits, Form F-01, newsletter opt-in (POPIA: off by default), member ID on success. |
+| `members.html` | Agenda 10 — The Back Room: Form M-01 member sign-in (H4B-0001), member card + perks, **private shop** (exclusive items only), **private parties** with RSVP + free entry. |
 | `gallery.html` | Agenda 08 — 5 IG windows (**all live, incl. @thenorthmob_**) + 8-photo feed + lightbox (admin-managed). |
 | `admin.html` | Orders board, enquiries, catalogue editor, gig manager, links manager, content editor, data export/import/reset. |
 

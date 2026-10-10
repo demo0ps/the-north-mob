@@ -91,7 +91,13 @@
   function visibleGigs() {
     var today = new Date().toISOString().slice(0, 10);
     return S.state.gigs
-      .filter(function (g) { return g.visible && g.dateISO >= today; })
+      .filter(function (g) { return g.visible && !g.membersOnly && g.dateISO >= today; })
+      .sort(function (a, b) { return a.dateISO < b.dateISO ? -1 : 1; });
+  }
+  function privateGigs() {
+    var today = new Date().toISOString().slice(0, 10);
+    return S.state.gigs
+      .filter(function (g) { return g.visible && g.membersOnly && g.dateISO >= today; })
       .sort(function (a, b) { return a.dateISO < b.dateISO ? -1 : 1; });
   }
   function renderHero() {
@@ -219,27 +225,8 @@
     if (!grid) return;
     grid.innerHTML = "";
     var member = S.isMember();
-    S.state.catalogue.filter(function (p) { return p.active; }).forEach(function (p) {
-      if (p.exclusive && !member) {
-        // locked card — teaser for the community page
-        var locked = el("article", "product product-locked");
-        var lw = el("div", "product-img");
-        var limg = el("img"); limg.src = imgSrc(p.img); limg.alt = "Members-only item — locked"; limg.loading = "lazy";
-        lw.appendChild(limg);
-        lw.appendChild(el("div", "locked-veil", '<span class="lock">MEMBERS ONLY</span>'));
-        locked.appendChild(lw);
-        var lb = el("div", "product-body");
-        lb.appendChild(el("h3", "product-name", "Locked drop"));
-        lb.appendChild(el("p", "product-desc", "The family gets first access to exclusive merch."));
-        var la = el("a", "btn btn-hl btn-sm", "Join the family");
-        la.href = "community.html";
-        lb.appendChild(la);
-        locked.appendChild(lb);
-        grid.appendChild(locked);
-        return;
-      }
+    S.state.catalogue.filter(function (p) { return p.active && !p.exclusive; }).forEach(function (p) {
       var card = el("article", "product");
-      if (p.exclusive) card.className = "product product-exclusive";
       var imgWrap = el("div", "product-img");
       var img = el("img"); img.src = imgSrc(p.img); img.alt = "Illustrative mockup: " + esc(p.name); img.loading = "lazy";
       imgWrap.appendChild(img);
@@ -276,6 +263,31 @@
       card.appendChild(body);
       grid.appendChild(card);
     });
+    // one members card: private-shop link for family, locked teaser for others
+    if (S.state.catalogue.some(function (p) { return p.active && p.exclusive; })) {
+      var mcard = el("article", "product product-members");
+      var mw = el("div", "product-img");
+      var mimg = el("img"); mimg.src = imgSrc(S.state.catalogue.filter(function (p) { return p.exclusive; })[0].img);
+      mimg.alt = "Members-only drop"; mimg.loading = "lazy";
+      mw.appendChild(mimg);
+      if (member) {
+        mw.appendChild(el("span", "member-flag", "FAMILY"));
+      } else {
+        mimg.style.filter = "blur(9px) grayscale(0.4) brightness(0.75)";
+        mw.appendChild(el("div", "locked-veil", '<span class="lock">MEMBERS ONLY</span>'));
+      }
+      mcard.appendChild(mw);
+      var mb = el("div", "product-body");
+      mb.appendChild(el("h3", "product-name", member ? "Private shop" : "Locked drop"));
+      mb.appendChild(el("p", "product-desc", member
+        ? "The exclusive drops live in the members area."
+        : "The family gets first access to exclusive merch."));
+      var ma = el("a", "btn " + (member ? "btn-hl" : "btn-red") + " btn-sm", member ? "Enter members area →" : "Join the family");
+      ma.href = member ? "members.html" : "community.html";
+      mb.appendChild(ma);
+      mcard.appendChild(mb);
+      grid.appendChild(mcard);
+    }
     var note = $("#vatNote");
     if (note) note.textContent = S.state.content.vatNote;
   }
@@ -538,7 +550,7 @@
     if (!S.isMember()) return;
     var chip = el("span", "member-chip", "FAMILY");
     chip.id = "memberChip";
-    chip.title = S.state.membership.name + " — family member";
+    chip.title = S.state.membership.name + " — " + (S.state.membership.memberNo || "family member");
     var cartBtn = $("#cartBtn");
     if (cartBtn) nav.insertBefore(chip, cartBtn); else nav.appendChild(chip);
   }
@@ -569,7 +581,7 @@
       if (!m) return;
       form.reset();
       $("#communityDone").classList.remove("hidden");
-      $("#communityRef").textContent = m.id;
+      $("#communityRef").textContent = m.memberNo || m.id;
       $("#communityDone").scrollIntoView({ behavior: "smooth", block: "center" });
       renderMemberChip();
       var c2 = $("#familyCount");
@@ -582,6 +594,141 @@
     return n + (n === 1 ? " family member" : " family members") + " (demo)";
   }
 
+  // ---------- members page (gate + private shop + private events) ----------
+  function whenShort(iso) {
+    var d = new Date(iso);
+    return d.getDate() + " " + MONTHS[d.getMonth()] + " " + d.getFullYear();
+  }
+  function renderMembersPage() {
+    var gate = $("#memberGate");
+    if (!gate) return; // not on members.html
+    var area = $("#memberArea");
+    if (S.isMember()) {
+      gate.classList.add("hidden");
+      area.classList.remove("hidden");
+      var m = S.state.membership;
+      $("#memName").textContent = m.name;
+      $("#memNo").textContent = m.memberNo || "—";
+      $("#memSince").textContent = m.since ? "Member since " + whenShort(m.since) : "";
+      renderMembersShop();
+      renderPrivateEvents();
+    } else {
+      gate.classList.remove("hidden");
+      area.classList.add("hidden");
+    }
+  }
+  function renderMembersShop() {
+    var grid = $("#memberShop");
+    if (!grid) return;
+    grid.innerHTML = "";
+    var items = S.state.catalogue.filter(function (p) { return p.active && p.exclusive; });
+    if (!items.length) {
+      grid.appendChild(el("p", "empty-note", "No private drops right now. The board is cooking."));
+      return;
+    }
+    items.forEach(function (p) {
+      var card = el("article", "product product-exclusive");
+      var imgWrap = el("div", "product-img");
+      var img = el("img"); img.src = imgSrc(p.img); img.alt = "Illustrative mockup: " + esc(p.name); img.loading = "lazy";
+      imgWrap.appendChild(img);
+      imgWrap.appendChild(el("span", "price-sticker", S.fmt(p.priceCents)));
+      imgWrap.appendChild(el("span", "member-flag", "FAMILY"));
+      if (!p.stock) imgWrap.appendChild(el("div", "soldout", "Sold out"));
+      card.appendChild(imgWrap);
+      var body = el("div", "product-body");
+      body.appendChild(el("h3", "product-name", esc(p.name)));
+      body.appendChild(el("p", "product-desc", esc(p.desc || "")));
+      if (p.ai) body.appendChild(el("span", "product-ai", "Illustrative image (AI)"));
+      var chosenSize = null;
+      if (p.sizes && p.sizes.length) {
+        chosenSize = p.sizes.indexOf("M") > -1 ? "M" : p.sizes[0];
+        var pills = el("div", "size-pills");
+        p.sizes.forEach(function (sz) {
+          var id = "msz-" + p.id + "-" + sz;
+          var input = el("input"); input.type = "radio"; input.name = "msz-" + p.id; input.value = sz; input.id = id;
+          if (sz === chosenSize) input.checked = true;
+          var lab = el("label", "size-pill", esc(sz));
+          lab.setAttribute("for", id);
+          input.addEventListener("change", function () { chosenSize = sz; });
+          pills.appendChild(input); pills.appendChild(lab);
+        });
+        body.appendChild(pills);
+      }
+      var btn = el("button", "btn btn-red btn-sm", p.stock ? "Add to cart" : "Sold out");
+      if (!p.stock) { btn.disabled = true; btn.className = "btn btn-disabled btn-sm"; }
+      else btn.addEventListener("click", function () {
+        if (S.addToCart(p.id, chosenSize)) { updateCartBadge(); toast("Added: " + p.name + (chosenSize ? " (" + chosenSize + ")" : "")); renderCart(); }
+      });
+      body.appendChild(btn);
+      card.appendChild(body);
+      grid.appendChild(card);
+    });
+  }
+  function renderPrivateEvents() {
+    var grid = $("#privateEvents");
+    if (!grid) return;
+    grid.innerHTML = "";
+    var gigs = privateGigs();
+    if (!gigs.length) {
+      grid.appendChild(el("p", "empty-note", "No private invites right now. Watch this space."));
+      return;
+    }
+    var mno = (S.state.membership && S.state.membership.memberNo) || "";
+    gigs.forEach(function (g) {
+      var d = new Date(g.dateISO + "T00:00:00");
+      var going = S.state.rsvps.some(function (r) { return r.eventId === g.id && r.memberNo === mno; });
+      var card = el("article", "gig-poster");
+      card.appendChild(el("p", "gp-kicker", "Private invite — members only"));
+      var date = el("div", "gp-date");
+      date.appendChild(el("span", "d", String(d.getDate())));
+      date.appendChild(el("span", "m", MONTHS[d.getMonth()] + " " + d.getFullYear()));
+      card.appendChild(date);
+      card.appendChild(el("h3", "gp-title", esc(g.title)));
+      card.appendChild(el("p", "gp-meta",
+        "<strong>" + DAYS[d.getDay()] + " " + d.getDate() + " " + MONTHS[d.getMonth()] + "</strong> · " +
+        esc(g.time || "") + " · " + esc(g.venue || "") + " · " + esc(g.area || "")));
+      card.appendChild(el("div", "gp-rule"));
+      var body = el("div", "gp-body");
+      body.appendChild(el("p", "gp-meta", "Free entry for members. Bring your member number."));
+      var btn = el("button", "btn btn-sm " + (going ? "btn-ghost" : "btn-hl"),
+        going ? "Going ✓ — cancel" : "RSVP — I'm in");
+      btn.addEventListener("click", function () {
+        var res = S.rsvpEvent(g.id);
+        if (res && res.cancelled) toast("RSVP cancelled");
+        else toast("You're on the list. " + (mno || ""));
+        renderPrivateEvents();
+      });
+      body.appendChild(btn);
+      card.appendChild(body);
+      grid.appendChild(card);
+    });
+  }
+  function wireMembersPage() {
+    var form = $("#loginForm");
+    if (!form) return;
+    form.addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      var err = $("#loginErr");
+      err.classList.add("hidden");
+      var val = $("#loginNo").value.trim();
+      var m = S.loginMember(val);
+      if (!m) {
+        err.textContent = "Member number not found on this device. Numbers look like H4B-0001 — or join the family first.";
+        err.classList.remove("hidden");
+        return;
+      }
+      $("#loginNo").value = "";
+      renderMemberChip(); renderMerch(); renderMembersPage();
+      toast("Welcome back, " + m.name);
+    });
+    var lo = $("#logoutBtn");
+    if (lo) lo.addEventListener("click", function () {
+      S.logoutMember();
+      updateCartBadge(); renderCart(); renderMemberChip(); renderMerch(); renderMembersPage();
+      toast("Logged out");
+    });
+  }
+
   // ---------- init ----------
   document.addEventListener("DOMContentLoaded", function () {
     // inject shared chrome first, then wire everything that exists on this page
@@ -592,7 +739,8 @@
     renderGigs(); renderMerch(); renderSponsors(); renderIG(); renderFooter();
     updateCartBadge(); renderCart();
     renderMemberChip();
-    wireBookingForm(); wireInvestForm(); wireLightbox(); wireCommunityForm();
+    renderMembersPage();
+    wireBookingForm(); wireInvestForm(); wireLightbox(); wireCommunityForm(); wireMembersPage();
 
     var cartBtn = $("#cartBtn");
     if (cartBtn) cartBtn.addEventListener("click", openDrawer);

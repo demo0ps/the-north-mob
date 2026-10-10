@@ -728,3 +728,15 @@ fieldset.field { border: none; }
 }
 .storage-banner.show { display: block; }
 .upload-wrap { display: inline-block; }
+
+/* ---------- v8: members area ---------- */
+.mcard { display: flex; align-items: center; gap: 1.1rem; flex-wrap: wrap; border-left: 4px solid var(--red); }
+.mcard-mid { flex: 1; min-width: 180px; }
+.mcard-mid .member-name { font-family: var(--display); font-size: 1.5rem; text-transform: uppercase; }
+.mcard-no { font-family: var(--display); font-size: 1.9rem; color: var(--red); letter-spacing: 0.06em; }
+.mcard-right { text-align: right; margin-left: auto; }
+.login-err {
+  background: rgba(222, 3, 4, 0.14); border: 1px solid var(--red); color: var(--red);
+  border-radius: 8px; font-size: 0.82rem; font-weight: 700; padding: 0.6rem 0.8rem; margin-bottom: 0.9rem;
+}
+.product-members .product-img img { object-fit: cover; }

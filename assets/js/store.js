@@ -18,6 +18,7 @@
     s.community = [];     // family signups
     s.membership = null;  // this browser's joined state
     s.contacts = [];      // CRM
+    s.rsvps = [];         // private-event RSVPs
     return s;
   }
 
@@ -32,6 +33,7 @@
       if (!Array.isArray(s.enquiries)) s.enquiries = [];
       if (!Array.isArray(s.community)) s.community = [];
       if (!Array.isArray(s.contacts)) s.contacts = [];
+      if (!Array.isArray(s.rsvps)) s.rsvps = [];
       if (!s.membership) s.membership = null;
       return s;
     } catch (e) {
@@ -258,13 +260,14 @@
     if (!data.name || !data.email) return null;
     var m = {
       id: "F" + Date.now().toString(36).slice(-4),
+      memberNo: "H4B-" + String(state.community.length + 1).padStart(4, "0"),
       name: data.name, email: data.email.trim(), phone: data.phone || "",
       interests: data.interests || [],
       newsletter: !!data.newsletter,
       ts: new Date().toISOString()
     };
     state.community.unshift(m);
-    state.membership = { joined: true, name: m.name, email: m.email, since: m.ts };
+    state.membership = { joined: true, memberId: m.id, memberNo: m.memberNo, name: m.name, email: m.email, since: m.ts };
     save();
     upsertContact({ name: m.name, email: m.email, phone: m.phone },
       { type: "signup", ref: m.id, summary: "Joined the family" + (m.interests.length ? " — " + m.interests.join(", ") : "") });
@@ -274,6 +277,49 @@
     return m;
   }
   function isMember() { return !!(state.membership && state.membership.joined); }
+  function loginMember(input) {
+    var v = String(input || "").trim().toUpperCase().replace(/^H4B-?/, "");
+    if (!/^\d{1,4}$/.test(v)) return null;
+    var want = "H4B-" + v.padStart(4, "0");
+    for (var i = 0; i < state.community.length; i++) {
+      var m = state.community[i];
+      if (String(m.memberNo || "").toUpperCase() === want) {
+        state.membership = { joined: true, memberId: m.id, memberNo: m.memberNo, name: m.name, email: m.email, since: m.ts };
+        save();
+        return m;
+      }
+    }
+    return null;
+  }
+  function logoutMember() {
+    // strip members-only items from the cart on logout — exclusivity must hold
+    state.cart = state.cart.filter(function (line) {
+      var p = findProduct(line.id);
+      return p && !p.exclusive;
+    });
+    state.membership = null;
+    save();
+  }
+  function rsvpEvent(eventId) {
+    if (!isMember()) return null;
+    var mno = state.membership.memberNo || "";
+    for (var i = 0; i < state.rsvps.length; i++) {
+      if (state.rsvps[i].eventId === eventId && state.rsvps[i].memberNo === mno) {
+        var removed = state.rsvps.splice(i, 1)[0];
+        save();
+        return { cancelled: true, rsvp: removed };
+      }
+    }
+    var r = { eventId: eventId, memberNo: mno, name: state.membership.name, ts: new Date().toISOString() };
+    state.rsvps.push(r);
+    save();
+    upsertContact({ name: state.membership.name, email: state.membership.email || "" },
+      { type: "rsvp", ref: eventId, summary: "RSVP — private members event" });
+    return { cancelled: false, rsvp: r };
+  }
+  function getRsvps(eventId) {
+    return state.rsvps.filter(function (r) { return r.eventId === eventId; });
+  }
 
   // ---- images (admin uploads) ----
   // Photos array entries may be file names (assets/img/...) or data URIs.
@@ -311,8 +357,9 @@
     if (!Array.isArray(state.orders)) state.orders = [];
     if (!Array.isArray(state.enquiries)) state.enquiries = [];
     if (!Array.isArray(state.community)) state.community = [];
-    if (!Array.isArray(state.contacts)) state.contacts = [];
-    if (!state.membership) state.membership = null;
+    if (!Array.isArray(s.contacts)) s.contacts = [];
+    if (!Array.isArray(s.rsvps)) s.rsvps = [];
+    if (!s.membership) s.membership = null;
     save();
     return true;
   }
@@ -339,6 +386,10 @@
     setEnquiryHandled: setEnquiryHandled,
     joinCommunity: joinCommunity,
     isMember: isMember,
+    loginMember: loginMember,
+    logoutMember: logoutMember,
+    rsvpEvent: rsvpEvent,
+    getRsvps: getRsvps,
     upsertContact: upsertContact,
     setContactStatus: setContactStatus,
     setContactTags: setContactTags,

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Members — THE NORTHMOB</title>
+  <meta name="description" content="THE NORTHMOB members area — sign in with your member number for private merch, invite-only parties and family benefits.">
+  <meta name="theme-color" content="#0B0B0E">
+  <link rel="icon" type="image/jpeg" href="assets/img/logo.jpg">
+  <link rel="apple-touch-icon" href="assets/img/logo.jpg">
+  <link rel="stylesheet" href="assets/css/site.css?v=12">
+</head>
+<body data-page="members">
+
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track" id="tickerTrack"></div>
+  </div>
+
+  <header class="site-nav">
+    <div class="container inner">
+      <a class="brand" href="index.html" aria-label="THE NORTHMOB — home"><img class="logo-mark" src="assets/img/logo.jpg" alt="THE NORTHMOB"></a>
+      <nav class="nav-links" aria-label="Main">
+        <a href="index.html">Home</a>
+        <a href="the-mob.html">The Mob</a>
+        <a href="gigs.html">Gigs</a>
+        <a href="merch.html">Merch</a>
+        <a href="partners.html">Partners</a>
+        <a href="bookings.html">Bookings</a>
+        <a href="community.html">Community</a>
+        <a href="members.html" class="active">Members</a>
+        <a href="gallery.html" class="hot">Gallery</a>
+      </nav>
+      <button class="cart-btn" id="cartBtn" aria-label="Open cart">
+        Cart <span class="cart-count" id="cartCount" style="display:none">0</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- LOGIN GATE (shown when not signed in) -->
+    <section class="section page-gap" id="memberGate">
+      <div class="container" style="max-width:640px">
+        <div class="sec-head">
+          <p class="sec-slash">/// AGENDA 10 — MEMBERS ONLY</p>
+          <h2 class="sec-title">The Back Room</h2>
+          <p class="sec-note">Private merch, invite-only parties, family benefits. Sign in with your member number.</p>
+        </div>
+        <p class="form-kicker" style="margin:0 0 1.1rem">Form M-01 — Member Sign-In</p>
+        <form class="form-card" id="loginForm" novalidate>
+          <div class="field">
+            <label for="loginNo">Member number *</label>
+            <input id="loginNo" type="text" placeholder="H4B-0001" autocomplete="off" required>
+            <span class="err">Member number is required.</span>
+            <span class="hint" style="display:block;margin-top:0.35rem">Your number was issued when you joined the family — it looks like H4B-0001.</span>
+          </div>
+          <p class="login-err hidden" id="loginErr" role="alert"></p>
+          <button type="submit" class="btn btn-red">Sign in</button>
+        </form>
+        <p class="sec-note mt">Not family yet? <a href="community.html" style="color:var(--red);font-weight:800">Join the community →</a></p>
+        <p class="sec-note"><span class="tag">Demo</span> Sign-in checks this browser's member list — a real shared login comes with the production backend after signing.</p>
+      </div>
+    </section>
+
+    <!-- MEMBERS AREA (shown when signed in) -->
+    <section class="section page-gap hidden" id="memberArea">
+      <div class="container">
+
+        <div class="sec-head">
+          <p class="sec-slash">/// AGENDA 10 — MEMBERS ONLY</p>
+          <h2 class="sec-title">The Back Room</h2>
+        </div>
+
+        <!-- member card -->
+        <div class="panel-card mcard">
+          <div class="mcard-left">
+            <div class="avatar-mono" id="memMono">★</div>
+          </div>
+          <div class="mcard-mid">
+            <h3 class="member-name" id="memName"></h3>
+            <p class="biz-title" id="memSince"></p>
+          </div>
+          <div class="mcard-right">
+            <p class="hint">Member number</p>
+            <p class="mcard-no" id="memNo"></p>
+          </div>
+          <button class="btn btn-ghost btn-sm" id="logoutBtn" type="button">Sign out</button>
+        </div>
+
+        <!-- perks -->
+        <div class="story-grid mt">
+          <div class="story-card">
+            <h3>Free tickets</h3>
+            <p>Members get into every private party free — bring your member number and your energy.</p>
+          </div>
+          <div class="story-card">
+            <h3>Private merch</h3>
+            <p>Family-only drops you can't buy as an outsider. Signed pieces, limited runs.</p>
+          </div>
+          <div class="story-card">
+            <h3>Invite-only parties</h3>
+            <p>Venues and addresses shared with members only. The streets hear about it after.</p>
+          </div>
+          <div class="story-card">
+            <h3>First word</h3>
+            <p>New music, dates and drops reach the family before anyone else.</p>
+          </div>
+        </div>
+
+        <!-- private shop -->
+        <div class="sec-head mt" style="margin-bottom:1.6rem">
+          <p class="sec-slash">/// THE VAULT</p>
+          <h2 class="sec-title" style="font-size:clamp(1.7rem,4vw,2.6rem)">Private Shop</h2>
+          <p class="sec-note"><span class="tag">Members only</span> These drops never hit the public store. <span id="vatNote"></span></p>
+        </div>
+        <div class="merch-grid" id="memberShop"></div>
+
+        <!-- private events -->
+        <div class="sec-head mt" style="margin-bottom:1.6rem">
+          <p class="sec-slash">/// INVITES</p>
+          <h2 class="sec-title" style="font-size:clamp(1.7rem,4vw,2.6rem)">Private Parties</h2>
+          <p class="sec-note"><span class="tag">Invite only</span> Free entry for members. RSVP so the board knows you're coming.</p>
+        </div>
+        <div class="gig-grid" id="privateEvents"></div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="foot-grid">
+        <div>
+          <div class="letterhead">
+            <img class="logo-mark" src="assets/img/logo.jpg" alt="THE NORTHMOB">
+            <div>
+              <h4>THE NORTHMOB</h4>
+              <p class="hint">EST. GA-RANKUWA · PRETORIA NORTH</p>
+            </div>
+          </div>
+          <p style="color:var(--muted);max-width:26rem;margin-top:0.7rem">Trapcardi pioneers. Family first — here 4 business.</p>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <p><a id="footEmail" href="#"></a></p>
+          <p><a id="footPhone" href="#"></a></p>
+        </div>
+        <div>
+          <h4>Site</h4>
+          <p><a href="the-mob.html">The Mob</a> · <a href="gigs.html">Gigs</a> · <a href="merch.html">Merch</a></p>
+          <p><a href="partners.html">Partners</a> · <a href="bookings.html">Bookings</a> · <a href="community.html">Community</a> · <a href="gallery.html">Gallery</a></p>
+          <p><a href="admin.html">Admin (demo)</a></p>
+        </div>
+      </div>
+      <p class="fine">
+        Demo site for THE NORTHMOB (prospect, not signed). Merch prices, event details, sponsors and contact details are placeholders.
+        Statistics are as reported in music media coverage, not independently verified.
+        Hero, merch and poster imagery is AI-generated, for illustration; the logo and photos of the Mob are supplied by the owner.
+        Checkout and forms are simulations — no payments are taken and no data leaves this browser.
+      </p>
+    </div>
+  </footer>
+
+  <script src="assets/js/seed.js?v=7"></script>
+  <script src="assets/js/store.js?v=3"></script>
+  <script src="assets/js/site.js?v=13"></script>
+</body>
+</html>

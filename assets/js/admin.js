@@ -326,7 +326,7 @@
     members.forEach(function (m) {
       var tr = el("tr");
       tr.innerHTML =
-        "<td><strong>" + esc(m.name) + "</strong><br><span class='hint'>" + esc(m.id) + "</span></td>" +
+        "<td><strong>" + esc(m.name) + "</strong><br><span class='hint'>" + esc(m.memberNo || m.id) + "</span></td>" +
         "<td>" + esc(m.email) + (m.phone ? "<br><span class='hint'>" + esc(m.phone) + "</span>" : "") + "</td>" +
         "<td>" + esc((m.interests || []).join(", ") || "—") + "</td>" +
         "<td>" + (m.newsletter ? "<span class='status-chip st-new'>subscribed</span>" : "<span class='hint'>no</span>") + "</td>" +
@@ -394,7 +394,13 @@
         "<div class='fieldline'><span class='lab'>Venue</span><input class='admin-input' data-f='venue' data-id='" + g.id + "' value='" + esc(g.venue || "") + "'></div>" +
         "<div class='fieldline'><span class='lab'>Area</span><input class='admin-input' data-f='area' data-id='" + g.id + "' value='" + esc(g.area || "") + "'></div>" +
         "<div class='fieldline'><span class='lab'>Ticket link (blank = TBC)</span><input class='admin-input' data-f='ticketUrl' data-id='" + g.id + "' value='" + esc(g.ticketUrl || "") + "' placeholder='https://…'></div>" +
+        "<div class='fieldline'><span class='lab'>Access</span><label class='check-line'><input type='checkbox' data-f='membersOnly' data-id='" + g.id + "'" + (g.membersOnly ? " checked" : "") + "> Members-only (private invite)</label></div>" +
         "</div>";
+      var rsvps = S.getRsvps ? S.getRsvps(g.id) : [];
+      if (g.membersOnly || rsvps.length) {
+        row.appendChild(el("p", "hint mt", "RSVPs: " + rsvps.length +
+          (rsvps.length ? " — " + rsvps.map(function (r) { return esc(r.name) + " (" + esc(r.memberNo) + ")"; }).join(", ") : "none yet")));
+      }
       box.appendChild(row);
     });
     $$("input[data-f]", box).forEach(function (inp) {

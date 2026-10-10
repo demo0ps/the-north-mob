@@ -1,11 +1,11 @@
-// THE NORTHMOB — demo seed v6 (community + CRM + uploads + sized merch).
+// THE NORTHMOB — demo seed v7 (members area: login, private shop, private parties).
 // Facts from owner-supplied research (sources in docs/profiles/the-north-mob.md).
 // Stream/view figures are REPORTED, not independently verified.
 // Admin edits override this in localStorage. Bumping `version` resets the store.
 window.TNM = window.TNM || {};
 
 TNM.SEED = {
-  version: 6,
+  version: 7,
 
   content: {
     heroKicker: "GA-RANKUWA · PRETORIA NORTH · TRAPCARDI",
@@ -47,15 +47,20 @@ TNM.SEED = {
     { id: "ig-icey", label: "MajorIcey", handle: "major_icey", confirmed: true, avatar: "" }
   ],
 
+  // Public item + members-only items (exclusive items render ONLY in the members shop).
   catalogue: [
-    { id: "tee", name: "H4B Tee", priceCents: 29900, img: "assets/img/merch-tee.jpg", desc: "Black oversized tee. Logo chest print.", active: true, stock: true, ai: true, sizes: ["S", "M", "L", "XL", "XXL"], exclusive: false },
-    { id: "tee-signed", name: "H4B Signed Tee", priceCents: 39900, img: "assets/img/merch-tee.jpg", desc: "Members only — signed by the board. Limited run.", active: true, stock: true, ai: true, sizes: ["M", "L", "XL"], exclusive: true }
+    { id: "tee",        name: "H4B Tee",            priceCents: 29900, img: "assets/img/merch-tee.jpg", desc: "Black oversized tee. Logo chest print.",          active: true, stock: true,  ai: true, sizes: ["S", "M", "L", "XL", "XXL"], exclusive: false },
+    { id: "tee-signed", name: "H4B Signed Tee",     priceCents: 39900, img: "assets/img/merch-tee.jpg", desc: "Members only — signed by the board. Limited run.", active: true, stock: true,  ai: true, sizes: ["M", "L", "XL"], exclusive: true },
+    { id: "cap-member", name: "Members Cap",        priceCents: 19900, img: "assets/img/merch-tee.jpg", desc: "Members-only snapback. Red underbrim.",           active: true, stock: true,  ai: true, sizes: [], exclusive: true }
   ],
 
+  // membersOnly events render only inside the members area (private invites).
   gigs: [
-    { id: "g1", title: "Ga-Rankuwa",   dateISO: "2026-11-14", time: "19:00", venue: "Venue TBC", area: "Ga-Rankuwa",   ticketUrl: "", visible: true },
-    { id: "g2", title: "Soshanguve",   dateISO: "2026-11-28", time: "18:00", venue: "Venue TBC", area: "Soshanguve",   ticketUrl: "", visible: true },
-    { id: "g3", title: "Hammanskraal", dateISO: "2026-12-12", time: "20:00", venue: "Venue TBC", area: "Hammanskraal", ticketUrl: "", visible: true }
+    { id: "g1", title: "Ga-Rankuwa",   dateISO: "2026-11-14", time: "19:00", venue: "Venue TBC", area: "Ga-Rankuwa",   ticketUrl: "", visible: true, membersOnly: false },
+    { id: "g2", title: "Soshanguve",   dateISO: "2026-11-28", time: "18:00", venue: "Venue TBC", area: "Soshanguve",   ticketUrl: "", visible: true, membersOnly: false },
+    { id: "g3", title: "Hammanskraal", dateISO: "2026-12-12", time: "20:00", venue: "Venue TBC", area: "Hammanskraal", ticketUrl: "", visible: true, membersOnly: false },
+    { id: "p1", title: "The Vault — Private Listening Session", dateISO: "2026-11-21", time: "18:00", venue: "Address shared with members", area: "Pretoria North", ticketUrl: "", visible: true, membersOnly: true },
+    { id: "p2", title: "Members-Only Year-End Turn Up",        dateISO: "2026-12-19", time: "19:00", venue: "Address shared with members", area: "Ga-Rankuwa",     ticketUrl: "", visible: true, membersOnly: true }
   ],
 
   sponsors: [
