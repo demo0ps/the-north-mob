@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin — THE NORTHMOB (demo)</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/jpeg" href="assets/img/logo.jpg">
+  <link rel="stylesheet" href="assets/css/site.css?v=10">
+</head>
+<body>
+
+  <header class="admin-top">
+    <div class="container">
+      <div class="inner">
+        <img class="logo-mark" src="assets/img/logo.jpg" alt="THE NORTHMOB" style="height:38px;width:38px">
+        <span class="admin-badge">Admin — demo</span>
+        <a class="btn btn-ghost btn-sm to-site" href="index.html">← View storefront</a>
+      </div>
+      <p class="hint" style="padding-bottom:0.6rem">Everything is stored in this browser only (localStorage). Export from the Data tab to move it — no backend, no logins, nothing leaves this device.</p>
+      <nav class="tabs" aria-label="Admin sections">
+        <button class="tab active" data-panel="panel-orders">Orders <span class="count" id="ordCount">0</span></button>
+        <button class="tab" data-panel="panel-enquiries">Enquiries <span class="count" id="enqCount">0</span></button>
+        <button class="tab" data-panel="panel-catalogue">Catalogue</button>
+        <button class="tab" data-panel="panel-gigs">Gigs</button>
+        <button class="tab" data-panel="panel-links">Links</button>
+        <button class="tab" data-panel="panel-content">Content</button>
+        <button class="tab" data-panel="panel-data">Data</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container">
+
+      <!-- ORDERS -->
+      <section class="admin-panel active" id="panel-orders">
+        <div class="sec-head">
+          <p class="sec-slash">/// STOREFRONT ORDERS</p>
+          <h2 class="sec-title">Orders</h2>
+          <p class="sec-note"><span id="ordOpen">0 open</span> — flow: new → confirmed → fulfilled. Money is stored in integer cents.</p>
+        </div>
+        <div class="panel-card" style="overflow-x:auto">
+          <table class="tbl">
+            <thead>
+              <tr><th>Order</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="ordersBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ENQUIRIES -->
+      <section class="admin-panel" id="panel-enquiries">
+        <div class="sec-head">
+          <p class="sec-slash">/// BOOKINGS · SPONSORS · INVESTORS</p>
+          <h2 class="sec-title">Enquiries</h2>
+          <p class="sec-note"><span id="enqOpen">0 open</span> — every storefront form lands here.</p>
+        </div>
+        <div class="row-actions" style="margin-bottom:1.2rem">
+          <button class="btn btn-sm btn-hl enq-filter active" data-filter="all">All</button>
+          <button class="btn btn-sm btn-ghost enq-filter" data-filter="booking">Bookings</button>
+          <button class="btn btn-sm btn-ghost enq-filter" data-filter="sponsorship">Sponsorship</button>
+          <button class="btn btn-sm btn-ghost enq-filter" data-filter="investment">Investment</button>
+        </div>
+        <div id="enqFilter" data-filter="all" hidden></div>
+        <div id="enquiryList"></div>
+      </section>
+
+      <!-- CATALOGUE -->
+      <section class="admin-panel" id="panel-catalogue">
+        <div class="sec-head">
+          <p class="sec-slash">/// MERCH</p>
+          <h2 class="sec-title">Catalogue</h2>
+          <p class="sec-note">Edits appear on the storefront on next load. Uncheck "Active" to hide an item; uncheck "In stock" to show it sold out.</p>
+        </div>
+        <div id="catList"></div>
+      </section>
+
+      <!-- GIGS -->
+      <section class="admin-panel" id="panel-gigs">
+        <div class="sec-head">
+          <p class="sec-slash">/// SHOWS</p>
+          <h2 class="sec-title">Gigs</h2>
+          <p class="sec-note">Add a gig, set its details, flip "Visible" when it's ready for the site. Blank ticket link shows "Tickets TBC".</p>
+        </div>
+        <div style="margin-bottom:1.2rem"><button class="btn btn-hl btn-sm" id="addGig">+ Add gig</button></div>
+        <div id="gigList"></div>
+      </section>
+
+      <!-- LINKS -->
+      <section class="admin-panel" id="panel-links">
+        <div class="sec-head">
+          <p class="sec-slash">/// HANDLES &amp; CONTACT</p>
+          <h2 class="sec-title">Links</h2>
+          <p class="sec-note">Instagram windows and public contact details. A handle only links out once "Confirmed" is ticked.</p>
+        </div>
+        <div id="igRows"></div>
+        <div style="margin-bottom:1.2rem"><button class="btn btn-hl btn-sm" id="addIg">+ Add Instagram account</button></div>
+        <div class="panel-card">
+          <h3>Contact details (footer)</h3>
+          <div class="edit-grid c3">
+            <div class="fieldline"><span class="lab">Public email (placeholder for now)</span>
+              <input class="admin-input" id="linkEmail"></div>
+            <div class="fieldline"><span class="lab">Public phone (placeholder for now)</span>
+              <input class="admin-input" id="linkPhone"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONTENT -->
+      <section class="admin-panel" id="panel-content">
+        <div class="sec-head">
+          <p class="sec-slash">/// WORDS ON THE SITE</p>
+          <h2 class="sec-title">Content</h2>
+          <p class="sec-note">Hero subtitle, ticker lines and the sponsor wall.</p>
+        </div>
+        <div class="panel-card">
+          <h3>Hero</h3>
+          <div class="fieldline"><span class="lab">Hero subtitle</span>
+            <textarea class="admin-input" id="ctSub" rows="3"></textarea></div>
+        </div>
+        <div class="panel-card">
+          <h3>Ticker (one line per item)</h3>
+          <textarea class="admin-input" id="ctTicker" rows="6"></textarea>
+        </div>
+        <div class="panel-card">
+          <h3>Sponsor wall</h3>
+          <div id="sponsorRows"></div>
+          <button class="btn btn-hl btn-sm" id="addSponsor">+ Add partner slot</button>
+          <p class="hint mt">Keep "Still a placeholder" ticked for empty slots — the site then shows an open slot instead of implying a real sponsor.</p>
+        </div>
+      </section>
+
+      <!-- DATA -->
+      <section class="admin-panel" id="panel-data">
+        <div class="sec-head">
+          <p class="sec-slash">/// TAKE IT WITH YOU</p>
+          <h2 class="sec-title">Data</h2>
+          <p class="sec-note">This demo has no backend. Export gives you everything as JSON; import restores it on any device or browser.</p>
+        </div>
+        <div class="panel-card">
+          <h3>Export / import / reset</h3>
+          <div class="row-actions">
+            <button class="btn btn-hl btn-sm" id="exportBtn">Export JSON</button>
+            <label class="btn btn-ghost btn-sm" style="display:inline-block">
+              Import JSON <input type="file" id="importFile" accept="application/json,.json" hidden>
+            </label>
+            <button class="btn btn-ghost btn-sm" id="resetBtn">Reset to seed</button>
+          </div>
+          <p class="hint mt">Reset clears orders, enquiries and every edit — back to the original demo content.</p>
+        </div>
+        <div class="panel-card">
+          <h3>What this admin is</h3>
+          <p class="hint">A pitch demo of the management view: order tracking, enquiry handling, catalogue, gigs, links and site text — all running in the browser.
+          When the Mob signs, this maps 1-to-1 onto a real backend (suggested: Supabase free tier) with logins, and nothing about the workflow changes.</p>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script src="assets/js/seed.js?v=5"></script>
+  <script src="assets/js/store.js?v=1"></script>
+  <script src="assets/js/admin.js?v=2"></script>
+</body>
+</html>
