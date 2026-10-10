@@ -750,3 +750,12 @@ fieldset.field { border: none; }
   margin: 0 auto 0.8rem;
   box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--red);
 }
+
+/* ---------- v10: holdings credit ---------- */
+.holdings {
+  text-align: center; margin-top: 1.2rem; padding-top: 1.1rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.74rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+}
+.holdings a { color: var(--muted); text-decoration: none; }
+.holdings a:hover { color: var(--red); }

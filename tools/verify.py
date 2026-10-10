@@ -188,6 +188,10 @@ with sync_playwright() as pw:
     for f in PAGES:
         page.goto(BASE + "/" + f, wait_until="networkidle")
         check(f"{f}: no h-overflow @1280", page.evaluate("document.documentElement.scrollWidth <= 1281"))
+        h = page.locator(".holdings a")
+        check(f"{f}: holdings credit links out", h.count() == 1
+              and h.get_attribute("href") == "https://eliteway.co.za"
+              and h.get_attribute("target") == "_blank")
     for f, shot in [("index.html","desktop-home.png"), ("members.html","desktop-members.png"),
                     ("community.html","desktop-community.png"), ("merch.html","desktop-merch.png"),
                     ("gigs.html","desktop-gigs.png"), ("the-mob.html","desktop-the-mob.png"),
