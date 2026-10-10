@@ -2,6 +2,7 @@ from playwright.sync_api import sync_playwright
 import sys, os, re
 
 BASE = "http://127.0.0.1:8000"
+SPOTIFY = "https://open.spotify.com/artist/0iZ4kkTa0bDsMz9Qgrr0zx"
 ROOT = "/home/user/the-north-mob"
 PAGES = ["index.html", "the-mob.html", "gigs.html", "merch.html",
          "partners.html", "bookings.html", "community.html", "members.html", "gallery.html"]
@@ -48,6 +49,8 @@ with sync_playwright() as pw:
     teasers = [a.get_attribute("href") for a in page.locator("#teasers .teaser-card").all()]
     check("home: 6 teaser cards", len(teasers) == 6 and "community.html" in teasers, str(teasers))
     check("home: no FAMILY chip before joining", page.locator("#memberChip").count() == 0)
+    check("home: spotify CTA visible + correct", page.locator("#heroSpotify").is_visible()
+          and page.locator("#heroSpotify").get_attribute("href") == SPOTIFY)
     page.screenshot(path="/home/user/the-north-mob/shots/mobile-home.png", full_page=True)
 
     # ---------- MERCH (anonymous) ----------
@@ -172,7 +175,12 @@ with sync_playwright() as pw:
     page.wait_for_selector("#investDone:not(.hidden)", timeout=5000)
     check("invest ref IN-", page.locator("#investRef").inner_text().startswith("IN-"))
     page.goto(BASE + "/gallery.html", wait_until="networkidle")
-    check("gallery: 5 IG windows", page.locator("#igWindows .ig-window").count() == 5)
+    check("gallery: 5 IG windows + 1 Spotify window",
+          page.locator("#igWindows .ig-window:not(.sp-window)").count() == 5
+          and page.locator("#igWindows .sp-window").count() == 1)
+    check("gallery: spotify window links out", page.locator("#igWindows .sp-window a.btn").get_attribute("href") == SPOTIFY)
+    check("gallery: footer spotify link", page.locator("#footSpotify").is_visible()
+          and page.locator("#footSpotify").get_attribute("href") == SPOTIFY)
     check("gallery: 8 photos", page.locator("#igFeed button").count() == 8)
 
     # ---------- desktop ----------
@@ -219,6 +227,9 @@ with sync_playwright() as pw:
     # Content gallery manager
     page.locator(".tab[data-panel='panel-content']").click()
     check("content: gallery manager with 8 thumbs", page.locator("#galleryMgr .pm-cell").count() == 8)
+    # Links tab: spotify field
+    page.locator(".tab[data-panel='panel-links']").click()
+    check("admin links: spotify url field", page.evaluate("document.querySelector('#linkSpotify').value") == SPOTIFY)
     # orders flow
     page.locator(".tab[data-panel='panel-orders']").click()
     page.locator("#panel-orders .row-actions button", has_text="Confirm").first.click()

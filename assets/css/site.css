@@ -740,3 +740,13 @@ fieldset.field { border: none; }
   border-radius: 8px; font-size: 0.82rem; font-weight: 700; padding: 0.6rem 0.8rem; margin-bottom: 0.9rem;
 }
 .product-members .product-img img { object-fit: cover; }
+
+/* ---------- v9: spotify window ---------- */
+.sp-window { border-color: var(--red); }
+.sp-disc {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: var(--red); color: #fff;
+  display: grid; place-items: center; font-size: 1.5rem;
+  margin: 0 auto 0.8rem;
+  box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--red);
+}

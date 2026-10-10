@@ -107,6 +107,15 @@
       '<span class="row1">' + esc(S.state.content.heroTitle).split(" ").slice(0, 1).join(" ") + "</span> " +
       '<span class="row2">' + esc(S.state.content.heroTitle).split(" ").slice(1).join(" ") + "</span>";
     $("#heroSub").textContent = S.state.content.heroSub;
+    var sp = $("#heroSpotify");
+    if (sp) {
+      if (S.state.content.spotifyUrl) {
+        sp.href = S.state.content.spotifyUrl;
+        sp.style.display = "";
+      } else {
+        sp.style.display = "none";
+      }
+    }
     renderNextEvent();
   }
   function renderNextEvent() {
@@ -487,6 +496,21 @@
         }
         wrap.appendChild(card);
       });
+      // Spotify window (link-out — embeds need network the preview doesn't have)
+      if (S.state.content.spotifyUrl) {
+        var spw = el("div", "ig-window sp-window");
+        var disc = el("div", "sp-disc", "&#9654;");
+        disc.setAttribute("aria-hidden", "true");
+        spw.appendChild(disc);
+        spw.appendChild(el("h3", null, "THE NORTHMOB"));
+        spw.appendChild(el("p", "handle", "Spotify — artist page"));
+        var spa = el("a", "btn btn-hl btn-sm", "Open on Spotify ↗");
+        spa.setAttribute("aria-label", "THE NORTHMOB on Spotify");
+        spa.href = S.state.content.spotifyUrl;
+        spa.target = "_blank"; spa.rel = "noopener";
+        spw.appendChild(spa);
+        wrap.appendChild(spw);
+      }
     }
     var feed = $("#igFeed");
     if (feed) {
@@ -539,6 +563,15 @@
     e.href = "mailto:" + S.state.content.contactEmail;
     var p = $("#footPhone");
     if (p) { p.textContent = S.state.content.contactPhone; p.href = "tel:" + S.state.content.contactPhone.replace(/\s+/g, ""); }
+    var fs = $("#footSpotify");
+    if (fs) {
+      if (S.state.content.spotifyUrl) {
+        fs.href = S.state.content.spotifyUrl;
+        fs.style.display = "";
+      } else {
+        fs.style.display = "none";
+      }
+    }
   }
 
   // ---------- membership chip (every page) ----------

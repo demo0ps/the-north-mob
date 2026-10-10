@@ -5,7 +5,7 @@
 window.TNM = window.TNM || {};
 
 TNM.SEED = {
-  version: 7,
+  version: 8,
 
   content: {
     heroKicker: "GA-RANKUWA · PRETORIA NORTH · TRAPCARDI",
@@ -22,6 +22,7 @@ TNM.SEED = {
     ],
     contactEmail: "bookings@thenorthmob.example",   // placeholder (.example is reserved)
     contactPhone: "+27 00 000 0000",                 // placeholder
+    spotifyUrl: "https://open.spotify.com/artist/0iZ4kkTa0bDsMz9Qgrr0zx",  // owner-supplied 2026-10-10
     vatNote: "Prices include VAT (demo assumption)."
   },
 

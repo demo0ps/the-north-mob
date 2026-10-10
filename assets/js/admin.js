@@ -513,10 +513,14 @@
     });
     $("#linkEmail").value = S.state.content.contactEmail;
     $("#linkPhone").value = S.state.content.contactPhone;
+    var spf = $("#linkSpotify");
+    if (spf) spf.value = S.state.content.spotifyUrl || "";
   }
   function wireLinksStatic() {
     $("#linkEmail").addEventListener("change", function () { S.state.content.contactEmail = this.value.trim(); S.save(); storageBanner(); });
     $("#linkPhone").addEventListener("change", function () { S.state.content.contactPhone = this.value.trim(); S.save(); storageBanner(); });
+    var spw2 = $("#linkSpotify");
+    if (spw2) spw2.addEventListener("change", function () { S.state.content.spotifyUrl = this.value.trim(); S.save(); storageBanner(); });
     $("#addIg").addEventListener("click", function () {
       S.state.igAccounts.push({ id: "ig-" + Date.now().toString(36), label: "New account", handle: "handle", confirmed: false });
       S.save(); renderLinks();

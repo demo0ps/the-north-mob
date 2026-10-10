@@ -1,6 +1,7 @@
 # STATUS — THE NORTHMOB demo
 
-**Where we are:** seventh build — members area: member-number login (H4B-0001…),
+**Where we are:** seventh build + Spotify window (hero CTA, gallery card, footer
+links on every page, admin-editable URL). Verified 102/102. Previous: seventh build — members area: member-number login (H4B-0001…),
 exclusive buying shop, private invite parties with RSVP + free entry, member perks.
 Verified 98/98. Previous state: sixth build — community + CRM + uploads. New: Community page
 (join the family, exclusive merch, newsletter), admin CRM with contact timelines,
