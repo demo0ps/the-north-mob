@@ -3,8 +3,9 @@
 **Where we are:** sixth build — community + CRM + uploads. New: Community page
 (join the family, exclusive merch, newsletter), admin CRM with contact timelines,
 image uploads (members/products/gallery), sized merch (S–XXL), Members tab, gallery
-manager. Verified 99/99. Deployed base: https://demo0ps.github.io/the-north-mob/
-(this build is committed locally — see Next steps to publish). Previous state: fifth build — aesthetic aligned to the owner's references (monochrome photo,
+manager. Verified 99/99. Deployed: https://demo0ps.github.io/the-north-mob/ —
+build 6 (community/CRM/uploads) pushed 2026-10-10, Pages status verified below.
+Previous state: fifth build — aesthetic aligned to the owner's references (monochrome photo,
 red accents), typographic event posters, single-tee store, Play on the partner wall,
 @thenorthmob_ live. Verified 76/76. Live in the preview pane; run locally with
 `python3 -m http.server 8000 --bind 0.0.0.0` from this folder.
