@@ -38,6 +38,14 @@ Cart/checkout/toast injected on every page; cart follows the visitor across page
 - AI imagery (hero, invest, tee mockup) greyscale/illustrative and labelled; logo + photos client-supplied.
 - Member executive titles are creative flavour from researched roles.
 
+## Deployed (2026-10-10)
+
+- Repo: https://github.com/demo0ps/the-north-mob (public, branch `main`)
+- Live preview: **https://demo0ps.github.io/the-north-mob/**
+- GitHub Pages serving from `main` / root; build status "built"; all 8 pages + assets verified HTTP 200 on the live URL.
+- Future updates: commit to `main` and push — Pages redeploys automatically.
+- Optional: custom domain via a CNAME record (e.g. thenorthmob.eliteway.co.za → demo0ps.github.io), then enforce HTTPS in repo settings.
+
 ## Known gaps / not done
 
 - **image-1.png reference arrived empty (0 bytes)** — re-attach if it carried unique direction.
